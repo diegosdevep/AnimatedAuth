@@ -1,12 +1,12 @@
 import {
   Dimensions,
-  KeyboardAvoidingView,
   Platform,
   StatusBar,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
   View,
 } from 'react-native';
 import Svg, { Image, Ellipse, ClipPath } from 'react-native-svg';
@@ -16,7 +16,6 @@ import Animated, {
   interpolate,
   withTiming,
   withDelay,
-  set,
 } from 'react-native-reanimated';
 import { useState } from 'react';
 
@@ -25,7 +24,6 @@ export default function App() {
 
   const { width, height } = Dimensions.get('window');
   const imagePosition = useSharedValue(1);
-  const buttonFormScale = useSharedValue(1);
 
   const imageAnimatedStyle = useAnimatedStyle(() => {
     const interpolation = interpolate(
@@ -69,12 +67,6 @@ export default function App() {
     };
   });
 
-  const buttonFormAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: buttonFormScale.value }],
-    };
-  });
-
   const loginHandler = () => {
     imagePosition.value = 0;
     if (isRegistering) {
@@ -90,62 +82,62 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle='light-content' />
-      <Animated.View style={[styles.content, imageAnimatedStyle]}>
-        <Svg width={width} height={height + 100}>
-          <ClipPath id='clipPathId'>
-            <Ellipse cx={width / 2} rx={height} ry={height + 100} />
-          </ClipPath>
-          <Image
-            width={width + 20}
-            height={height + 100}
-            preserveAspectRatio='xMidYMid slice'
-            href={require('./assets/bg.png')}
-            clipPath='url(#clipPathId)'
-          />
-        </Svg>
-      </Animated.View>
-
-      <View style={{ marginBottom: 10, height: height / 3 }}>
-        <Animated.View
-          style={[
-            styles.close,
-            closerButtonAnimatedStyle,
-            { backgroundColor: '#253F62' },
-          ]}
-        >
-          <Text
-            style={{ fontSize: 18, color: '#FFF' }}
-            onPress={() => (imagePosition.value = 1)}
-          >
-            X
-          </Text>
-        </Animated.View>
-        <Animated.View style={buttonAnimatedStyle}>
-          <TouchableOpacity
-            onPress={loginHandler}
-            activeOpacity={0.7}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Log in</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        <Animated.View style={buttonAnimatedStyle}>
-          <TouchableOpacity
-            onPress={registerHandler}
-            activeOpacity={0.7}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>Register</Text>
-          </TouchableOpacity>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={styles.container}>
+        <StatusBar barStyle='light-content' />
+        <Animated.View style={[StyleSheet.absoluteFill, imageAnimatedStyle]}>
+          <Svg width={width} height={height + 100}>
+            <ClipPath id='clipPathId'>
+              <Ellipse cx={width / 2} rx={height} ry={height + 100} />
+            </ClipPath>
+            <Image
+              width={width + 20}
+              height={height + 100}
+              preserveAspectRatio='xMidYMid slice'
+              href={require('./assets/bg.png')}
+              clipPath='url(#clipPathId)'
+            />
+          </Svg>
         </Animated.View>
 
-        <Animated.View style={[styles.form, formAnimatedStyle]}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 150}
+        <View style={{ marginBottom: 10, height: height / 3 }}>
+          <Animated.View
+            style={[
+              styles.close,
+              closerButtonAnimatedStyle,
+              { backgroundColor: '#253F62' },
+            ]}
           >
+            <Text
+              style={{ fontSize: 18, color: '#FFF' }}
+              onPress={() => (imagePosition.value = 1)}
+            >
+              X
+            </Text>
+          </Animated.View>
+          <Animated.View style={buttonAnimatedStyle}>
+            <TouchableOpacity
+              onPress={loginHandler}
+              activeOpacity={0.7}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>Log in</Text>
+            </TouchableOpacity>
+          </Animated.View>
+          <Animated.View style={buttonAnimatedStyle}>
+            <TouchableOpacity
+              onPress={registerHandler}
+              activeOpacity={0.7}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>Register</Text>
+            </TouchableOpacity>
+          </Animated.View>
+
+          <Animated.View style={[styles.form, formAnimatedStyle]}>
             {isRegistering && (
               <TextInput
                 placeholder='Username'
@@ -170,10 +162,10 @@ export default function App() {
                 {isRegistering ? 'Register' : 'Log in'}
               </Text>
             </TouchableOpacity>
-          </KeyboardAvoidingView>
-        </Animated.View>
+          </Animated.View>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -213,6 +205,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   form: {
+    position: 'absolute',
     zIndex: -1,
     justifyContent: 'center',
     ...StyleSheet.absoluteFill,

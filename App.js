@@ -85,6 +85,7 @@ export default function App() {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 10}
     >
       <View style={styles.container}>
         <StatusBar barStyle='light-content' />
@@ -222,6 +223,7 @@ const styles = StyleSheet.create({
   close: {
     width: 40,
     height: 40,
+    marginBottom: 20,
     alignSelf: 'center',
     justifyContent: 'center',
     elevation: 1,

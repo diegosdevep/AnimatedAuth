@@ -1,5 +1,7 @@
 import {
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
   StatusBar,
   StyleSheet,
   Text,
@@ -90,31 +92,36 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle='light-content' />
-      <Animated.View style={[StyleSheet.absoluteFill, imageAnimatedStyle]}>
+      <Animated.View style={[styles.content, imageAnimatedStyle]}>
         <Svg width={width} height={height + 100}>
           <ClipPath id='clipPathId'>
             <Ellipse cx={width / 2} rx={height} ry={height + 100} />
           </ClipPath>
           <Image
-            width={width + 100}
+            width={width + 20}
             height={height + 100}
             preserveAspectRatio='xMidYMid slice'
-            href={require('./assets/bg.avif')}
+            href={require('./assets/bg.png')}
             clipPath='url(#clipPathId)'
           />
         </Svg>
+      </Animated.View>
 
-        <Animated.View style={[styles.close, closerButtonAnimatedStyle]}>
+      <View style={{ marginBottom: 10, height: height / 3 }}>
+        <Animated.View
+          style={[
+            styles.close,
+            closerButtonAnimatedStyle,
+            { backgroundColor: '#253F62' },
+          ]}
+        >
           <Text
-            style={{ fontSize: 18 }}
+            style={{ fontSize: 18, color: '#FFF' }}
             onPress={() => (imagePosition.value = 1)}
           >
             X
           </Text>
         </Animated.View>
-      </Animated.View>
-
-      <View style={{ marginBottom: 10, height: height / 3 }}>
         <Animated.View style={buttonAnimatedStyle}>
           <TouchableOpacity
             onPress={loginHandler}
@@ -135,28 +142,35 @@ export default function App() {
         </Animated.View>
 
         <Animated.View style={[styles.form, formAnimatedStyle]}>
-          {isRegistering && (
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 150}
+          >
+            {isRegistering && (
+              <TextInput
+                placeholder='Username'
+                placeholderTextColor='#253F62'
+                style={styles.input}
+              />
+            )}
             <TextInput
-              placeholder='Username'
+              placeholder='Email'
+              keyboardType='email-address'
               placeholderTextColor='#253F62'
               style={styles.input}
             />
-          )}
-          <TextInput
-            placeholder='Email'
-            placeholderTextColor='#253F62'
-            style={styles.input}
-          />
-          <TextInput
-            placeholder='Password'
-            placeholderTextColor='#253F62'
-            style={styles.input}
-          />
-          <TouchableOpacity activeOpacity={0.7} style={styles.btn}>
-            <Text style={styles.btnText}>
-              {isRegistering ? 'Register' : 'Log in'}
-            </Text>
-          </TouchableOpacity>
+            <TextInput
+              placeholder='Password'
+              secureTextEntry
+              placeholderTextColor='#253F62'
+              style={styles.input}
+            />
+            <TouchableOpacity activeOpacity={0.7} style={styles.btn}>
+              <Text style={styles.btnText}>
+                {isRegistering ? 'Register' : 'Log in'}
+              </Text>
+            </TouchableOpacity>
+          </KeyboardAvoidingView>
         </Animated.View>
       </View>
     </View>
@@ -168,21 +182,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
   },
-  // content: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   bottom: 0,
-  //   left: 0,
-  //   right: 0,
-  // },
+  content: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   btn: {
     backgroundColor: '#253F62',
     height: 55,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 35,
-    marginHorizontal: 20,
-    marginVertical: 10,
+    marginHorizontal: '5%',
+    marginTop: 20,
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: {
@@ -199,7 +213,6 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   form: {
-    marginBottom: 70,
     zIndex: -1,
     justifyContent: 'center',
     ...StyleSheet.absoluteFill,
@@ -229,6 +242,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     alignItems: 'center',
-    top: -20,
+    top: Platform.OS === 'ios' ? -65 : -50,
   },
 });
